@@ -1,0 +1,254 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet" href="../fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+<link rel="stylesheet" href="../fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+
+<title>Untitled Document</title>
+		<style>
+		html, body { font-size:10px; font-family:Verdana; margin:0; padding:0; }
+		#container { margin:0px auto 0 auto; background:white; border-radius:0px; padding:0px;}
+		#tree { float:left; width:23%; overflow:auto; padding:0px 0}
+		#slider{float:left;width:1%; border-left:1px solid silver; cursor: ew-resize;}
+		#data{width:74%;float:left; overflow:auto}
+		#data textarea { margin:1% 1% 1% 0; padding:0; height:97%; width:98%; border:1px solid black; background:white; display:block; overflow:auto; }
+		#data, #code { font: normal normal normal 12px/18px 'Consolas', monospace !important; }
+		
+		/*List View*/
+		a {
+  			text-decoration:none;
+		}
+		.img_box{
+			display:inline-block;
+			height:300px;
+			width:300px;
+			border: 1px solid black;
+			margin:10px;
+		}
+
+		.landscape{
+			width:100%;
+			display: block;
+			margin:auto;
+		}
+		.portrait{
+			height:100%;
+			display: block;
+			margin:auto;
+		}
+		figure{
+			height:240px;
+			margin: 0;
+    		padding: 0;
+    		bottom: 0;
+		}
+		figcaption{
+			padding:10px;
+			text-align:center;
+		}
+
+		#pdf {
+			width: 100%;
+			min-height:400px;
+			/*margin: 2em auto;*/
+			border: 1px solid black;
+		}
+		
+		#pdf p {
+		   padding: 1em;
+		}
+		
+		#pdf object {
+		   display: block;
+		   border: solid 1px #666;
+		}
+
+		/* Image Information Form */
+		
+		button{
+			display:block;
+			margin:1em 1em 0 1em;
+		}
+		
+		.img_info{
+			display:inline-block;
+			height:300px;
+			margin:0px;
+		}
+		
+		.vertical_list{
+			display:inline-block;
+			margin:1em;
+			width:95%;
+		}
+		
+		.vertical_list label, .vertical_list input, .vertical_list textarea{
+			width:100%;
+		}
+		
+		.vertical_list ul
+		{
+			padding:1em;
+			list-style-type:none;
+		}
+		
+		.vertical_list ul li
+		{
+			/*Important to control height*/
+			line-height: 1em;
+			list-style: none;
+			padding: 5px 0px;
+			margin-bottom: 2px;
+		}
+		
+		.vertical_list label {
+			display:inline-block;
+			font-size: 1.25em;
+			margin-bottom: 2px;
+		}
+		
+		.horizontal_list ul
+		{
+			margin: 0;
+			padding: 0;
+			list-style-type: none;
+		}
+
+		.horizontal_list ul li {
+			display:inline-block;
+			padding: 5px 10px;
+			margin-bottom: 2px;
+		}
+		
+		#description{
+			height:8em;
+		}
+		
+		#keywords{
+			height:3em;
+		}
+		
+		@media(min-width:701px)
+		{
+			.img_info{
+				width:300px;
+			}
+		}
+		
+		@media(max-width:700px)
+		{
+			.img_info{
+				width:100%;
+			}
+			.vertical_list{
+				width:90%;
+			}
+		}
+
+
+		</style>
+
+</head>
+
+<body>
+    <form id=image_form>
+        <fieldset class="vertical_list">
+       <legend>Artwork Information</legend>
+       
+        <button type="submit">Save Changes</button>
+         
+            <div class="img_box">
+            <a class="fancybox" rel="group" href="cards/giz/Places/Early Cape Breton/Freaky Sunset Over The Barachoi.jpg">
+            <figure>
+                <img class="portrait" alt="test" src="thumbs/giz/Places/Early Cape Breton/Freaky Sunset Over The Barachoi.jpg">  
+            </figure>
+            <figcaption>giz/Places/Cape Breton/Whacky Sunset.jpg</figcaption>
+            </a>
+          </div>
+          
+          <div class="img_info">
+          
+            <ul>
+            <li>
+                <label for="artwork_title">Title</label>
+                <input id="artwork_title" name="artwork_title" type="text" required>
+            </li>
+            <li>
+                <label for="artwork_medium">Medium</label>
+                <input id="artwork_medium" name="artwork_medium" type="text" required>
+            </li>
+            <li>
+                <label for="artwork_year">Year</label>
+                <input id="artwork_year" name="artwork_year" type="text" >
+            </li>
+            <li>
+                <label for="artwork_height" >Height</label>
+                <input id="artwork_height" name="artwork_height" type="number" maxlength="20" >
+            </li>
+            <li>
+                <label for="artwork_width" >Width</label>
+                <input id="artwork_width" name="artwork_width" type="number" maxlength="20" > 
+            </li>
+            <li>
+                <label for="artwork_units">Units</label>
+                <select id="artwork_units" name="artwork_units">
+                    <option selected>Pixels</option>
+                <option>Inches</option>
+                <option>Centimeters</option>
+                </select>
+            </li>
+          </ul>    
+          </div>
+          
+        </fieldset>
+        
+        <fieldset class="vertical_list">
+            <legend>Extra Information</legend>
+          <ul>
+              <li>
+                    <label for="keywords">Key Words</label>
+                    <textarea id="keywords" name="keywords" height="200">RolyFlex, Cape Breton, Sunsets"</textarea>
+                </li>
+              <li>
+                    <label for="description">Description</label>
+                 <textarea id="description" name="description" height="400">The magic of reciprocity failure during a long exposure time at sunset.
+                 </textarea>
+                </li>
+
+            </ul>
+        </fieldset>
+    </form>
+        
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <!-- Add mousewheel plugin (this is optional) -->
+    <script type="text/javascript" src="../fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+    <!-- Add fancyBox -->
+    <script type="text/javascript" src="../fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+    
+    <!-- Optionally add helpers - button, thumbnail and/or media -->
+    <script type="text/javascript" src="../fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+    <script type="text/javascript" src="../fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+    <script type="text/javascript" src="../fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+        
+	<script type="text/javascript">
+		$(function(){
+			$(".fancybox").fancybox({
+				helpers : {
+					title : {
+						type : 'inside'
+					}
+				}
+			});
+		});
+	</script>
+</body>
+</html>
+<!--
+{"fields":[{"spec_id":"1","column":"path","caption":"File Path","column_type":"READ_ONLY_TEXT_AREA","value":"Foto Gwaii\/2012\/lol_b.jpg"},{"spec_id":"2","column":"title","caption":"Image Title","column_type":"TEXT_AREA","value":"lol_b"},{"spec_id":"3","column":"description","caption":"Image Description","column_type":"TEXT_AREA","value":""},{"spec_id":"4","column":"keywords","caption":"Image Key Words","column_type":"TEXT_AREA","value":"Abstract"},{"spec_id":"5","column":"creator","caption":"Image Creator","column_type":"TEXT","value":"Foto Gwaii"},{"spec_id":"6","column":"user_id","caption":"User ID","column_type":"READ_ONLY_INTEGER","value":"112"},{"spec_id":"7","column":"location_id","caption":"Image Location ID","column_type":"READ_ONLY_INTEGER","value":"0"},{"spec_id":"8","column":"attachments","caption":"Image Attachments","column_type":"READ_ONLY_INTEGER","value":"0"},{"spec_id":"9","column":"height","caption":"Image Height","column_type":"READ_ONLY_INTEGER","value":"854"},{"spec_id":"10","column":"width","caption":"Image Width","column_type":"READ_ONLY_INTEGER","value":"1000"},{"spec_id":"12","column":"artwork_id","caption":"Artwork Information","column_type":"READ_ONLY_INTEGER","value":"10"},{"spec_id":"13","column":"artwork_title","caption":"Artwork Title","column_type":"TEXT_AREA","value":"lol_b"},{"spec_id":"14","column":"artwork_medium","caption":"Artwork Medium","column_type":"TEXT","value":"digital image"},{"spec_id":"15","column":"artwork_year","caption":"Artwork Creation Year","column_type":"TEXT","value":"2012"},{"spec_id":"16","column":"artwork_units","caption":"Artwork Units","column_type":"TEXT","value":"pixels"},{"spec_id":"17","column":"artwork_height","caption":"Artwork Height","column_type":"INTEGER","value":"854"},{"spec_id":"18","column":"artwork_width","caption":"Artwork Width","column_type":"INTEGER","value":"1000"},{"spec_id":"0","column":"item_id","caption":"Unique Identification Number","column_type":"READ_ONLY_INTEGER","value":"10"}]}
+-->

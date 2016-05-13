@@ -1,0 +1,201 @@
+html, body {
+	background:#ebebeb; font-size:10px; font-family:Verdana;
+	margin:0; padding:0;
+	overflow: hidden;
+}
+#container {
+	margin:50px auto 0 auto;
+	background:white;
+	border-radius:0px;
+	padding:0px;
+}
+#tree {
+	float:left;
+	width:23%;
+	overflow:auto;
+	padding:0px 0;
+	min-width: 100px
+}
+#slider{
+	float:left;
+	width:1%;
+	border-left:1px solid silver;
+	cursor: ew-resize;
+}
+#data{
+	padding-top: 10px;
+	width:74%;
+	float:left;
+	overflow:auto
+}
+#data textarea
+{
+	margin:1% 1% 1% 0;
+	padding:0;
+	height:97%; width:98%;
+	border:1px solid black;
+	background:white;
+	display:block;
+	overflow:auto;
+}
+
+#data, #code { font: normal normal normal 12px/18px 'Consolas', monospace !important; }
+
+/*Hide profile by default*/
+#data .profile{
+	display:none;
+}
+
+/*List View*/
+a {
+	text-decoration:none;
+}
+.img_box{
+	display:inline-block;
+	height:300px;
+	width:300px;
+	border: 1px solid black;
+	margin:10px;
+}
+.landscape{
+	width:100%;
+	display: block;
+	margin:auto;
+}
+.portrait{
+	height:100%;
+	display: block;
+	margin:auto;
+}
+figure{
+	height:240px;
+	margin: 0;
+	padding: 0;
+	bottom: 0;
+}
+figcaption{
+	padding:10px;
+	text-align:center;
+}
+
+#pdf {
+	width: 100%;
+	min-height:400px;
+	/*margin: 2em auto;*/
+	border: 1px solid black;
+}
+
+#pdf p {
+   padding: 1em;
+}
+
+#pdf object {
+   display: block;
+   border: solid 1px #666;
+}
+
+
+/* Image Information Form */
+
+#image_form button{
+	display:inline-block;
+	margin:1em 1em 0 1em;
+}
+
+#image_form textarea{
+	height:4em;
+}
+
+.img_info{
+	display:inline-block;
+	height:300px;
+	margin:0px;
+}
+
+.vertical_list{
+	display:inline-block;
+	margin:1em;
+	width:95%;
+}
+
+.vertical_list label, .vertical_list input, .vertical_list textarea{
+	width:100%;
+}
+
+.vertical_list ul
+{
+	padding:1em;
+	list-style-type:none;
+}
+
+.vertical_list ul li
+{
+	/*Important to control height*/
+	line-height: 1em;
+	list-style: none;
+	padding: 5px 0px;
+	margin-bottom: 2px;
+}
+
+.vertical_list label {
+	display:inline-block;
+	font-size: 1.25em;
+	margin-bottom: 2px;
+}
+
+.horizontal_list ul
+{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.horizontal_list ul li {
+	display:inline-block;
+	padding: 5px 10px;
+	margin-bottom: 2px;
+}
+
+#description{
+	height:8em;
+}
+
+#keywords{
+	height:3em;
+}
+
+/*permissions dialog */
+#permission_table{
+	margin:1em;
+	border:solid black 1px;
+}
+
+/*utility */
+.show{
+	display:block;
+}
+.hide{
+	display:none;
+}
+.show_inline{
+	display:inline;
+}
+
+
+@media(min-width:701px)
+{
+	.img_info{
+		width:300px;
+	}
+}
+
+@media(max-width:700px)
+{
+	.img_info{
+		width:100%;
+	}
+	.vertical_list{
+		width:90%;
+	}
+}
+

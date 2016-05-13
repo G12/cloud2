@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
+		<title>List View</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="dist/themes/default/style.min.css" />
+        <link rel="stylesheet" href="css/tree.css" />
+        <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+
+		<style>
+		html, body { background:#ebebeb; font-size:10px; font-family:Verdana; margin:0; padding:0; }
+		#container { margin:0px auto 0 auto; background:white; border-radius:0px; padding:0px;}
+		#tree { float:left; width:23%; overflow:auto; padding:0px 0}
+		#slider{float:left;width:1%; border-left:1px solid silver; cursor: ew-resize;}
+		#data{width:74%;float:left; overflow:auto}
+		#data textarea { margin:1% 1% 1% 0; padding:0; height:97%; width:98%; border:1px solid black; background:white; display:block; overflow:auto; }
+		#data, #code { font: normal normal normal 12px/18px 'Consolas', monospace !important; }
+		a {
+  			text-decoration:none;
+		}
+		.img_box{
+			display:inline-block;
+			height:300px;
+			width:300px;
+			border: 1px solid black;
+			margin:10px;
+		}
+		.landscape{
+			width:100%;
+			display: block;
+			margin:auto;
+		}
+		.portrait{
+			height:100%;
+			display: block;
+			margin:auto;
+		}
+		figure{
+			height:240px;
+			margin: 0;
+    		padding: 0;
+    		bottom: 0;
+		}
+		figcaption{
+			padding:10px;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="container" role="main">
+			<div id="tree"></div>
+           <div id="slider"></div>
+			<div id="data">
+				<div class="content code" style="display:none;"><textarea id="code" readonly></textarea></div>
+				<div class="content folder" style="display:none;"></div>
+				<div class="content default" >
+                   <div class="img_box"> 
+                   <a href="">
+                   <figure><img  class="portrait" alt="img1" title="img1" src="http://surrealranch.ca/cloud/thumbs/ruby/1995/Birch%20-%20Oil%20On%20Canvas%20-%201995%20-%2066%20x%2030%20in.%20168%20x%2076%20cm.jpg"></figure><figcaption>Birch - Oil On Canvas - 1995 - 66 x 30 in. 168 x 76 cm.</figcaption>
+                   </a>
+                   </div>
+                   
+                   
+                   <div class="img_box"> 
+                   <a href="">
+                   <figure><img class="landscape" alt="img2" title="img2" src="http://surrealranch.ca/cloud/thumbs/ruby/1986-87/Suite%20For%20A%20Hill,%20Panels%201,2,3%20-%20Oil%20On%20Canvas%20-%201986-87%20-%2060%20x%2078%20in.%20152%20x%20198%20cm.jpg"></figure><figcaption> - Oil On Canvas - 1986-87 - 60 x 78 in. 152 x 198 cm.</figcaption>
+                   </a>
+                   </div>
+					 
+               </div>
+			</div>
+		</div>
+	</body>
+</html>
