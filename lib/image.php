@@ -360,10 +360,8 @@
 		private function makeThumb()
 		{
 			$this->thumb_path = $this->makeRealPath("thumbs");
-			//$this->logger->debug("Test for Thumb:" . $this->thumb_path);
 			if(!file_exists($this->thumb_path))
 			{
-				//$this->logger->debug("Make Thumb:" . $this->thumb_path);
 				if(!$this->resizeImage(self::THUMB_SIZE,$this->thumb_path))
 				{
 					throw new GZImageFileException("Could not make Thumbnail: ", $this->thumb_path);

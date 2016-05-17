@@ -30,9 +30,6 @@ class FileSys
 	protected function real($path) {
 		$temp = realpath($path);
 		if(!$temp) { throw new Exception('Path does not exist: ' . $path); }
-		//if($this->base && strlen($this->base)) {
-		//	if(strpos($temp, $this->base) !== 0) { throw new Exception('Path is not inside base ('.$this->base.'): ' . $temp); }
-		//}
 		return $temp;
 	}
 	//Replace all / forward slashs with the directory seperator on this server
@@ -70,7 +67,7 @@ class FileSys
 		$this->base = $this->real($base . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR);
 		//$this->logger->debug("real base = " . $this->base);
 
-		$this->base_path = $this->real($this->base);
+		$this->base_path = $this->real($base);
 		//$this->logger->debug("base_path = " . $this->base_path);
 		
 		$this->folder = $folder;
@@ -259,9 +256,10 @@ class FileSys
 				}
 			}
 		}
-		if($with_root && $this->id($dir) === '/') {
-			$res = array(array('text' => basename($this->base), 'children' => $res, 'id' => '/', 'icon'=>'folder', 'state' => array('opened' => true, 'disabled' => true)));
-		}
+		//TODO sort this with_root thing out - probably just a cut and paste err
+		//if($with_root && $this->id($dir) === '/') {
+		//	$res = array(array('text' => basename($this->base), 'children' => $res, 'id' => '/', 'icon'=>'folder', 'state' => array('opened' => true, 'disabled' => true)));
+		//}
 		//return json_encode($res);
 		return $res;
 	}
@@ -350,7 +348,17 @@ class FileSys
 		throw new Exception('Not a valid selection: ' . $dir);
 	}
 	public function create($id, $name, $mkdir = false) {
-		$dir = $this->path($id);
+
+		if($id)
+		{
+			$dir = $this->path($id);
+		}
+		else //creating a user directory
+		{
+			$dir = $this->real($this->base);
+		}
+		$this->logger->debug("id: " . $id . " name: " . $name . " dir: " . $dir);
+
 		if(preg_match('([^ a-zа-я-_0-9.]+)ui', $name) || !strlen($name)) {
 			throw new Exception('Invalid name: ' . $name);
 		}
@@ -402,6 +410,7 @@ class FileSys
 			//calc this path first because this->id(dir) throws on nonexistent dir ?
 			$thumbs = $this->base_path . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR . $this->id($dir);
 			$cards = $this->base_path . DIRECTORY_SEPARATOR . 'cards' . DIRECTORY_SEPARATOR . $this->id($dir);
+
 			rmdir($dir);
 			rmdir($thumbs);
 			rmdir($cards);
@@ -672,22 +681,23 @@ class Folders
 		$this->lazyLoad();
 		//$sql = 'SELECT `user_id`, `group_id`, `permissions` FROM `ACL` WHERE `acl_id` = ' . $folder["acl_id"] . ' AND ( `group_id` IN ( SELECT `group_id` FROM `GROUP_MEMBERS` WHERE `user_id` = ' . $this->user_id . ' ) OR `user_id` = ' . $this->user_id . ' );';
 		$sql = 'SELECT g . name, a . group_id , a . permissions  FROM `ACL` AS a INNER JOIN `GROUPS` AS g ON g . group_id = a . group_id WHERE a . acl_id = ' . $folder["acl_id"] .'; ';
-		
 		$rs = $this->folders->getRecordSet($sql);
 		$group_set = array();
 		foreach($rs as $row)
 		{
-			//$field = array('user_id' => $row['user_id'], 'group_id' => $row['group_id'], 'permissions' => $row['permissions']);
-			$group_set[] = $row; 
+			//Use associative values
+			$group_set[] = array('name' => $row['name'], 'group_id' => $row['group_id'], 'permissions' => $row['permissions']);
+			//$group_set[] = $row;
 		}
-		
+
 		$sql = 'SELECT u . name , a . user_id , a . permissions FROM `ACL` AS a INNER JOIN `USERS` AS u ON u . user_id = a . user_id WHERE a . acl_id = ' . $folder["acl_id"] .'; ';
 		$rs = $this->folders->getRecordSet($sql);
 		$user_set = array();
 		foreach($rs as $row)
 		{
-			//$field = array('user_id' => $row['user_id'], 'group_id' => $row['group_id'], 'permissions' => $row['permissions']);
-			$user_set[] = $row; 
+			//Use associative values
+			$user_set[] = array('name' => $row['name'], 'user_id' => $row['user_id'], 'permissions' => $row['permissions']);
+			//$user_set[] = $row;
 		}
 		$permission_set = array('group_set' => $group_set, 'user_set' => $user_set);		
 		$this->logger->debug(print_r($permission_set,true));

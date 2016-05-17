@@ -27,7 +27,14 @@ $(function () {
                 var msg = "Add directory named: " + dirName + " for " + e.target.text + " with id " + e.target.id;
                 if(confirm(msg))
                 {
-                    
+                    //Call DirectoryAdd.php
+                    var data = {'user_id':e.target.id, 'path':dirName, 'permissions': 49};
+                    postData("lib/DirectoryAdd.php", data, function(json){
+                        alert("Successfully Added Directory respone: " + JSON.stringify(json));
+                    }, function(json)
+                    {
+                        alert("Server Problem response: " + JSON.stringify(json));
+                    });
                 }
             }
             else {
@@ -94,8 +101,8 @@ function postData(strUrl, data, success, error)
     {
         console.log("jqxhr.fail");
         console.log("Error status: " + e.status + " Error: " + e.statusText);
-        var str = my_str + " Error status: " + e.status + " Error: " + e.statusText + " responseText: " + e.responseText;
-        //alert(str.substring(0, 2500)); //Limit the string size
+        var str = my_str + "AJAX Error status: " + e.status + " Error: " + e.statusText + " responseText: " + e.responseText;
+        alert(str.substring(0, 2500)); //Limit the string size
     });
 
 }

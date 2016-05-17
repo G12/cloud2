@@ -3,7 +3,7 @@
 require_once "dbinfo.php";
 
 ///////////////////////////////////////////////////////////////////
-// File: DbHelper.php
+// File: DbHelper.class.php
 // Author: Thomas Wiegand
 // Copyright: 2014, Thomas Wiegand
 // Desc: This is a database helper file
@@ -708,7 +708,7 @@ class SQLLiteTable extends PDOStandardTable implements IdbTable
 	//return true on success
 	public function updateRow($row, $where_clause = NULL)
 	{
-		$this->err("Not Implemented see class SQLLiteTable in  DbHelper.php");
+		$this->err("Not Implemented see class SQLLiteTable in  DbHelper.class.php");
 		return false;
 	}
 	
@@ -718,7 +718,7 @@ class SQLLiteTable extends PDOStandardTable implements IdbTable
 	//returns the number of rows updated or -1 on failure.
 	public function updateFullRecordSet($recordset, $where_clause = NULL)
 	{
-		$this->err("Not Implemented see class SQLLiteTable in  DbHelper.php");
+		$this->err("Not Implemented see class SQLLiteTable in  DbHelper.class.php");
 		return false;
 	}
 
