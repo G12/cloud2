@@ -14,7 +14,8 @@ var isValid=(function(){
 
 //isValid('file name');
 
-
+//TODO add configurable user permissions
+var CONST_USER_PERMISSIONS = 51; //Owner role
 
 $(function () {
     $("#user_list").click(function (e) {
@@ -28,7 +29,7 @@ $(function () {
                 if(confirm(msg))
                 {
                     //Call DirectoryAdd.php
-                    var data = {'user_id':e.target.id, 'path':dirName, 'permissions': 49};
+                    var data = {'user_id':e.target.id, 'path':dirName, 'permissions': CONST_USER_PERMISSIONS};
                     postData("lib/DirectoryAdd.php", data, function(json){
                         alert("Successfully Added Directory respone: " + JSON.stringify(json));
                     }, function(json)

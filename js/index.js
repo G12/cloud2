@@ -157,11 +157,13 @@ $(function ()
 
 	$("#add_group_btn").click(function(e)
 	{
+		$("#wait_msg").html('<p>Under Construction TODO add group to ACL</p>');
 		$("#busy_box").dialog("open");
 	});
 	
 	$("#add_user_btn").click(function(e)
 	{
+		$("#wait_msg").html('<p>Under Construction TODO add user to ACL</p>');
 		$("#busy_box").dialog("open");
 	});
 	
@@ -382,7 +384,7 @@ $(function ()
 							}
 						};
 					}
-					if(AC_CREATE & mask)
+					if(AC_PERMISSIONS & mask)
 					{
 						temp.set_mods =
 						{
@@ -508,123 +510,125 @@ $(function ()
 				g_first = false;
 				if(g_cancel)
 				{
-					alert("Server Busy please wait!");
-				}
-				else
-				{
-					//alert('get_content&id=' + data.selected.join(':'));
-					$("#wait_msg").html('<p>Getting information for: ' + data.selected.join(':') + '</p>');
-					g_cancel = false;
-					$("#busy_box").dialog("open");
-					$.get('lib/MenuOps.php?operation=get_content&id=' + data.selected.join(':'), function (d)
+					//alert("Server Busy please wait!");
+					if(confirm("Server Busy - Cancel the Operation Now?"))
 					{
-						//alert("Received dat for:" + d.type);
-						var cancel = g_cancel;
-						$("#busy_box").dialog("close"); //dialog close always sets g_cancel = true
-						if(!cancel)
+						g_cancel = false;
+					}
+					return;
+				}
+				//alert('get_content&id=' + data.selected.join(':'));
+				$("#wait_msg").html('<p>Getting information for: ' + data.selected.join(':') + '</p>');
+				g_cancel = false;
+				$("#busy_box").dialog("open");
+				$.get('lib/MenuOps.php?operation=get_content&id=' + data.selected.join(':'), function (d)
+				{
+					//alert("Received dat for:" + d.type);
+					var cancel = g_cancel;
+					$("#busy_box").dialog("close"); //dialog close always sets g_cancel = true
+					if(!cancel)
+					{
+						var w = $(window).width() - $('#tree').width() - $('#slider').width() - 6;
+						$('#data').width(w);
+
+						//alert(d.type);
+						if(d && typeof d.type !== 'undefined')
 						{
-							var w = $(window).width() - $('#tree').width() - $('#slider').width() - 6;
-							$('#data').width(w);
-								
-							//alert(d.type);	
-							if(d && typeof d.type !== 'undefined')
+							$('#data .content').hide();
+							$('#data .default').hide();
+							$('#data .profile').hide();
+							switch(d.type.toLowerCase())
 							{
-								$('#data .content').hide();
-								$('#data .default').hide();
-								$('#data .profile').hide();
-								switch(d.type.toLowerCase())
-								{
-									case 'txt':
-									case 'text':
-									case 'md':
-									case 'js':
-									case 'json':
-									case 'css':
-									case 'html':
-									case 'htm':
-									case 'xml':
-									case 'c':
-									case 'cpp':
-									case 'h':
-									case 'sql':
-									case 'log':
-									case 'py':
-									case 'rb':
-									//case 'htaccess':
-									case 'php':
-										$('#data .code').show();
-										$('#code').val(d.content);
-										break;
-									case 'png':
-									case 'jpg':
-									case 'jpeg':
-									case 'bmp':
-									case 'gif':
-										g_profile = null;
-										g_profile = new G12_Cloud.ImageProfile(d);
-										g_profile.Show();
-										//Initialize fancybox to expand image thumbnail on the profile
-										$(".fancybox").fancybox({
-											helpers : {
-												title : {
-													type : 'inside'
-												}
-											}
-										});
-										break;
-									case 'pdf':
-										$('#data .default').html(d.content).show();
-										$('#pdf').height($(window).height());
-										break;
-									default:
-										//alert("Folder?");
-										$('#profile_card').removeClass("fancybox"); //Stop fancy box displaying last profile card
-										var str='<div>';
-										for(var i=0; i < d.content.length;i++)
-										{
-											var obj = d.content[i];
-											var img_class = 'portrait';
-											var ratio = obj.height/obj.width;
-											if(ratio < .8)
-											{
-												img_class = 'landscape';
-											}
-											if(obj.icon == 'folder')
-											{
-												str += '<div class="img_box"><a title="' + obj.name + '" href="#" id="' + obj.id + '">' + '<figure><img  class="' + img_class + '" alt="' + obj.name + '" title="' + obj.name + '"' + ' src="' + obj.imgURL + '"></figure><figcaption>' + obj.name + '</figcaption></a></div>';
-			
-											}
-											else
-											{
-												str += '<div class="img_box"><a class="fancybox" rel="group" title="' + obj.name + '" href="' + obj.cardURL + '" id="' + obj.id + '">' +
-											'<figure><img  class="' + img_class + '" alt="' + obj.name + '" title="' + obj.name + '"' +
-												' src="' + obj.imgURL + '"></figure><figcaption>' + obj.name + '</figcaption></a></div>';
+								case 'txt':
+								case 'text':
+								case 'md':
+								case 'js':
+								case 'json':
+								case 'css':
+								case 'html':
+								case 'htm':
+								case 'xml':
+								case 'c':
+								case 'cpp':
+								case 'h':
+								case 'sql':
+								case 'log':
+								case 'py':
+								case 'rb':
+								//case 'htaccess':
+								case 'php':
+									$('#data .code').show();
+									$('#code').val(d.content);
+									break;
+								case 'png':
+								case 'jpg':
+								case 'jpeg':
+								case 'bmp':
+								case 'gif':
+									g_profile = null;
+									g_profile = new G12_Cloud.ImageProfile(d);
+									g_profile.Show();
+									//Initialize fancybox to expand image thumbnail on the profile
+									$(".fancybox").fancybox({
+										helpers : {
+											title : {
+												type : 'inside'
 											}
 										}
-										str += '</div>';
-										$('#data .default').html(str).show();
-										//Initialize fancybox for use on the list of thumbnails generated above.
-										$(".fancybox").fancybox({
-											helpers : {
-												title : {
-													type : 'inside'
-												}
+									});
+									break;
+								case 'pdf':
+									$('#data .default').html(d.content).show();
+									$('#pdf').height($(window).height());
+									break;
+								default:
+									//alert("Folder?");
+									$('#profile_card').removeClass("fancybox"); //Stop fancy box displaying last profile card
+									var str='<div>';
+									for(var i=0; i < d.content.length;i++)
+									{
+										var obj = d.content[i];
+										var img_class = 'portrait';
+										var ratio = obj.height/obj.width;
+										if(ratio < .8)
+										{
+											img_class = 'landscape';
+										}
+										if(obj.icon == 'folder')
+										{
+											str += '<div class="img_box"><a title="' + obj.name + '" href="#" id="' + obj.id + '">' + '<figure><img  class="' + img_class + '" alt="' + obj.name + '" title="' + obj.name + '"' + ' src="' + obj.imgURL + '"></figure><figcaption>' + obj.name + '</figcaption></a></div>';
+
+										}
+										else
+										{
+											str += '<div class="img_box"><a class="fancybox" rel="group" title="' + obj.name + '" href="' + obj.cardURL + '" id="' + obj.id + '">' +
+										'<figure><img  class="' + img_class + '" alt="' + obj.name + '" title="' + obj.name + '"' +
+											' src="' + obj.imgURL + '"></figure><figcaption>' + obj.name + '</figcaption></a></div>';
+										}
+									}
+									str += '</div>';
+									$('#data .default').html(str).show();
+									//Initialize fancybox for use on the list of thumbnails generated above.
+									$(".fancybox").fancybox({
+										helpers : {
+											title : {
+												type : 'inside'
 											}
-										});
-										
-										break;
-								}
+										}
+									});
+
+									break;
 							}
 						}
-					}).fail(function(d)
-					{
-						$("#wait_msg").html('<p>' + d.statusText + ':</p><p>' + d.responseText + '</p>');
-					}).always(function()
-					{
-						//alert( "finished" );
-						g_cancel = false;
-					});
-				}
+					}
+				}).fail(function(d)
+				{
+					$("#wait_msg").html('<p>' + d.statusText + ':</p><p>' + d.responseText + '</p>');
+				}).always(function()
+				{
+					//alert( "finished" );
+					g_cancel = false;
+				});
 			}
 		}
 		else {

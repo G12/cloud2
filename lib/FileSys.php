@@ -784,6 +784,9 @@ class Users
 			$this->logger->debug("insertRow user_id  [" . print_r($user_id, true) . "]");
 			if($user_id)
 			{
+				//TODO add group permissions at least viewer
+				$sql = 'INSERT INTO `GROUP_MEMBERS` (`id`, `group_id`, `user_id`) VALUES (NULL, \'0\', \'126\'), (NULL, \'3\', \'126\');';
+
 				return array('user_id' => $user_id, 'status' => 'SUCCESS', 'msg' => 'User ' . $row["name"] . ' added to the system');
 			}
 			else
