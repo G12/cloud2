@@ -576,14 +576,14 @@ class Folders
 		$arr["path"] = $path;
 		$arr["acl_id"] = $acl;
 		$recordset[] = $arr;
-		return $this->folders->insertFullRecordSet($recordset,true);
+		return $this->folders->insertFullRecordSet($recordset);
 	}
 	
 	private function addFolderUsing($folder)
 	{
 		$recordset = array();
 		$recordset[] = $folder;
-		return $this->folders->insertFullRecordSet($recordset,true);
+		return $this->folders->insertFullRecordSet($recordset);
 	}
 
 	public function updateMods($id, $mods)
@@ -731,6 +731,8 @@ class Folders
 class Users
 {
 	private $users_table = NULL;
+	private $group_members_table = NULL;
+	private $pdo;
 	private $logger;
 	private $errlog;
 	
@@ -749,6 +751,17 @@ class Users
 		{
 			$mysqlTableUsers = new  MySQLTable(DB_NAME, "USERS");
 			$this->users_table = new RecordSetHelper($mysqlTableUsers, false);
+			$this->pdo = $this->users_table->getPDO();
+		}
+	}
+
+	private function lazyLoadGroupMembers()
+	{
+		//Lazy load objects
+		if(!$this->group_members_table)
+		{
+			$mysqlTableGroupMembers = new  MySQLTable(DB_NAME, "GROUP_MEMBERS");
+			$this->group_members_table = new RecordSetHelper($mysqlTableGroupMembers, false);
 		}
 	}
 
@@ -771,6 +784,19 @@ class Users
 		}
 		else
 		{
+			//Pull the group_set array out
+			$group_set = NULL;
+			if(isset($row['group_set'])){
+				if (is_array($row['group_set'])) {
+					$group_set = $row['group_set'];
+				} else {
+					$group_set = array($row['group_set']);
+				}
+			}
+			$this->logger->debug(("group_set: " . print_r($group_set, true)));
+			//now remove group_set
+			unset($row['group_set']);
+
 			$this->logger->debug("insertRow row = " . print_r($row, true));
 			//inserts one row of data into the table
 			//parameters: $row an associative array containg name value pairs to insert
@@ -780,17 +806,43 @@ class Users
 			//NOTE primary key must be auto_increment for MYSQL
 			$row['user_id'] = NULL;
 			$row['pswd'] = md5($row['pswd']);
+
+			//Start the transaction
+			$this->pdo->beginTransaction();
+
 			$user_id = $this->users_table->insertRow($row,'user_id');
 			$this->logger->debug("insertRow user_id  [" . print_r($user_id, true) . "]");
 			if($user_id)
 			{
-				//TODO add group permissions at least viewer
-				$sql = 'INSERT INTO `GROUP_MEMBERS` (`id`, `group_id`, `user_id`) VALUES (NULL, \'0\', \'126\'), (NULL, \'3\', \'126\');';
+				$this->lazyLoadGroupMembers();
+				//Create group_members recordset
+				$recordset = array();
+				foreach($group_set as $group_id){
+					$recordset[] = array('id' => NULL, 'group_id' => $group_id, 'user_id' => $user_id);
+				}
 
-				return array('user_id' => $user_id, 'status' => 'SUCCESS', 'msg' => 'User ' . $row["name"] . ' added to the system');
+				$this->logger->debug(("recordset: " . print_r($recordset, true)));
+
+				$count = $this->group_members_table->insertFullRecordSet($recordset);
+				if($count != -1)
+				{
+					$this->pdo->commit();
+					$cap = "groups";
+					if($count == 1)
+					{
+						$cap = "group";
+					}
+					return array('user_id' => $user_id, 'status' => 'SUCCESS', 'msg' => 'User ' . $row["name"] . ' added to the system in ' . $count . ' groups');
+				}
+				else
+				{
+					$this->pdo->rollBack();
+					return array('user_id' => NULL, 'status' => 'ERROR', 'msg' => 'Error adding user');
+				}
 			}
 			else
 			{
+				$this->pdo->rollBack();
 				return array('user_id' => NULL, 'status' => 'ERROR', 'msg' => 'Error adding user');
 			}
 		}
@@ -803,6 +855,15 @@ class Users
 		$sql = 'SELECT `user_id` , `name` , `email` FROM `USERS` WHERE 1';
 		return $this->users_table->getRowSet($sql);
 	}
+
+	public function getGroups()
+	{
+		$this->lazyLoad();
+
+		$sql = $sql = 'SELECT * FROM `GROUPS` WHERE 1';
+		return $this->users_table->getRowSet($sql);
+	}
+
 }
 
 class Images
@@ -818,7 +879,7 @@ class Images
 	public function __construct($user_id, $base_folder) //, $folder)
 	{
 		$this->user_id = $user_id;
-		$this->logger = new Log4Me(Log4me::INFO,"log.txt");
+		$this->logger = new Log4Me(Log4me::DEBUG,"log.txt");
 		$this->logger->setContext("Images Class", $_SERVER['PHP_SELF']);
 		$this->errlog = new Log4Me(Log4Me::ERROR,"error.txt");
 		$this->errlog->setContext("Images Class", $_SERVER['PHP_SELF']);
@@ -901,7 +962,7 @@ class Images
 		if($row)
 		{
 			$recordset[] = $row;
-			$count = $this->artworks_table->insertFullRecordSet($recordset,true);
+			$count = $this->artworks_table->insertFullRecordSet($recordset);
 			if($count != -1)
 			{
 				$count = -1;
@@ -960,10 +1021,13 @@ class Images
 		$arr["width"] = $image->getWidth();
 		$arr["acl_id"] = $folder_row["acl_id"]; //Folder acl is default
 		$recordset[] = $arr;
-		
+
+		$this->logger->debug("DEBUG1 path: " . $path . " folder_row: " . $folder_row);
+		$this->logger->debug("DEBUG2 recordset: " . print_r($recordset, true));
+
 		//Start Transaction
 		$this->pdo->beginTransaction();
-		$count = $this->images_table->insertFullRecordSet($recordset,true);
+		$count = $this->images_table->insertFullRecordSet($recordset);
 		if($count == -1)
 		{
 			//Roll Back?
@@ -1148,7 +1212,7 @@ class Artworks
 		if($row)
 		{
 			$recordset[] = $row;
-			$count = $this->table->insertFullRecordSet($recordset,true);
+			$count = $this->table->insertFullRecordSet($recordset);
 			if($count != -1)
 			{
 				$sql = 'SELECT `artwork_id` FROM `ARTWORKS` WHERE `path` = "' . $path . '"';
@@ -1348,7 +1412,7 @@ class Language
 			$rs[] = $row;
 		}
 		$this->lazyLoad();
-		$this->table->insertFullRecordSet($rs,false);
+		$this->table->insertFullRecordSet($rs);
 	}
 }
 
@@ -1364,7 +1428,7 @@ class ImagePages
 	{
 		$this->user_id = $user_id;
 		$this->lang = $lang;
-		$this->images = $images;
+		//$this->images = $images;
 		$this->logger = new Log4Me(Log4me::DEBUG,"log.txt");
 		$this->logger->setContext("Pages Class", $_SERVER['PHP_SELF']);
  	}

@@ -333,9 +333,13 @@
 			//Get the XMP data
 			try
 			{
+				//$this->logger->debug("filename " . $this->filename);
 				if($xmp_data = getXmpData($this->filename, 4000))
 				{
 					$xmp_array = get_xmp_array($xmp_data);
+
+					//$this->logger->debug("xmp_array: " . print_r($xmp_array. true));
+
 					$this->title = implode(",", $xmp_array['Title']);
 					$this->description = implode(",", $xmp_array['Description']);
 					$this->creator = implode(",", $xmp_array['Creator']);

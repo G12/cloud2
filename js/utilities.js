@@ -25,7 +25,10 @@ $(function () {
         {
             if(isValid(dirName))
             {
-                var msg = "Add directory named: " + dirName + " for " + e.target.text + " with id " + e.target.id;
+                var role = $('input[name=user_permission]:checked', '#directory_vals').val();
+                var group_id = $('input[name=user_permission]:checked', '#directory_vals').data("group_id");
+                var msg = "Add directory named: " + dirName + " for " + e.target.text + " with id " + e.target.id +
+                    " and role " + role + " and group_id: " + group_id;
                 if(confirm(msg))
                 {
                     //Call DirectoryAdd.php

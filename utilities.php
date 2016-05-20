@@ -46,6 +46,7 @@ if(isset($_POST['email'])) {
 }
 
 $userRecordSet = $users->getUsers();
+$groupsRecordSet = $users->getGroups();
 
 ?>
 <!DOCTYPE html>
@@ -181,6 +182,31 @@ $userRecordSet = $users->getUsers();
             </div>
         </div>
     </div>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Select Groups this user will belong to.</div>
+        <div class="panel-body">
+            <?php
+            if($groupsRecordSet)
+            {
+                foreach($groupsRecordSet as $row) {
+                    $mandatory = "";
+                    $group_id = $row['group_id'];
+                    if($group_id == 0)
+                    {
+                        $mandatory = 'checked="checked"';
+                    }
+                    echo '<div class="input-group margin-bottom">' .
+                    '<span class="input-group-addon">' .
+                        '<input ' . $mandatory . ' id="' . $group_id . '" name="group_set[]" value = "' . $group_id . '" type="checkbox" aria-describedby="label' . $group_id . '">' .
+                    '</span>' .
+                    '<label id="label' . $group_id . '" class="form-control" for="' . $group_id . '">' . $row['name'] . ': ' . $row['description'] . '</label>' .
+                    '</div>';
+                }
+            }
+            ?>
+        </div>
+    </div>
     </form>
 
     <div class="page-header">
@@ -188,7 +214,7 @@ $userRecordSet = $users->getUsers();
     </div>
 
     <p class="lead">To add a new directory; enter directory name then select user from list.</p>
-    <form name="submit_directory" method="post" action="utilities.php">
+    <form id="directory_vals" name="submit_directory" method="post" action="utilities.php">
         <div class="panel panel-default">
             <!-- Default panel contents -->
             <div class="panel-heading">Enter Directory Name</div>
@@ -199,6 +225,63 @@ $userRecordSet = $users->getUsers();
                 </div>
             </div>
         </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">Select Permissions for this user.</div>
+            <div class="panel-body">
+
+                <?php
+                if($groupsRecordSet)
+                {
+                    foreach($groupsRecordSet as $row) {
+                        $group_id = $row['group_id'];
+                        if($group_id == 0)
+                        {
+                            //$mandatory = 'checked="checked"';
+                        }
+                        else
+                        {
+                            echo '<div class="input-group margin-bottom">' .
+                                '<span class="input-group-addon">' .
+                                '<input name="user_permission" id="uid_' . $group_id . '" name="group_set[]"' .
+                                    'data-group_id="' . $group_id . '" value="' . $row['role'] .
+                                    '" type="radio" aria-describedby="uid_label' . $group_id . '">' .
+                                '</span>' .
+                                '<label id="uid_label' . $group_id . '" class="form-control" for="uid_' . $group_id . '">' . $row['name'] . ': ' . $row['description'] . '</label>' .
+                                '</div>';
+                        }
+                    }
+                }
+                ?>
+             </div>
+        </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">Select Permission Groups with access to this directory.</div>
+            <div class="panel-body">
+                <?php
+                if($groupsRecordSet)
+                {
+                    foreach($groupsRecordSet as $row) {
+                        $mandatory = "";
+                        $group_id = $row['group_id'];
+                        if($group_id == 0)
+                        {
+                            $mandatory = 'checked="checked"';
+                        }
+                        echo '<div class="input-group margin-bottom">' .
+                            '<span class="input-group-addon">' .
+                            '<input ' . $mandatory . ' id="id_' . $group_id . '" name="group_set[]" value = "' . $group_id .
+                                'data-group_id="' . $group_id . '" data-role="' . $row['role'] . '" type="checkbox" aria-describedby="id_label' . $group_id . '">' .
+                            '</span>' .
+                            '<label id="id_label' . $group_id . '" class="form-control" for="id_' . $group_id . '">' . $row['name'] . ': ' . $row['description'] . '</label>' .
+                            '</div>';
+                    }
+                }
+                ?>
+            </div>
+        </div>
+
     </form>
 
     <div class="panel panel-default">
@@ -221,15 +304,6 @@ $userRecordSet = $users->getUsers();
                         '</a>';
                 }
                 ?>
-                <!--
-                <a href="#" class="list-group-item active">
-                    Cras justo odio
-                </a>
-                <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-                <a href="#" class="list-group-item">Morbi leo risus</a>
-                <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-                <a href="#" class="list-group-item">Vestibulum at eros</a>
-                -->
             </div>
         </div>
     </div>
