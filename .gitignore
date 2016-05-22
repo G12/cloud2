@@ -33,6 +33,8 @@ dw_php_codehinting.config
 .idea/sqlDataSources.xml
 .idea/dynamic.xml
 .idea/uiDesigner.xml
+.idea/webServers.xml
+.idea/deployment.xml
 
 # Gradle:
 .idea/gradle.xml

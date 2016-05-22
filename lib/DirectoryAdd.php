@@ -34,6 +34,13 @@ if(!is_null($user))
 			$path = $_POST['path'];
 			$user_id = $_POST['user_id'];
 			$user_permission = $_POST['permissions'];
+
+			$temp = $_POST['group_set'];
+			//$logger->debug("DEBUG1 temp: " . print_r($temp, true));
+
+			$group_set = json_decode($temp, true);
+			//$logger->debug("DEBUG2 groupset: " . print_r($group_set, true));
+
 			$mods = 0;
 
 			//Start the transaction
@@ -52,15 +59,14 @@ if(!is_null($user))
 				$recordset = array();
 
 				//Make the group_set array
-				$sql = 'SELECT * FROM `GROUPS`';
-				$rs = $folder_table->getRecordSet($sql);
-				foreach($rs as $row)
+				foreach($group_set as $row)
 				{
 					$groupRow = array('id' => NULL, 'acl_id' => $acl_id, 'user_id' => NULL, 'group_id' => $row['group_id'],
 						'permissions' => $row['role']);
 					$recordset[] = $groupRow;
 				}
 
+				//Add root permissions for directory owner
 				$row = array('id' => NULL, 'acl_id' => $acl_id, 'user_id' => $user_id,
 					'group_id' => NULL, 'permissions' => $user_permission);
 				$recordset[] = $row;

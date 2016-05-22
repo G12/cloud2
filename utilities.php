@@ -94,7 +94,7 @@ $groupsRecordSet = $users->getGroups();
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Utilities</a>
+            <a class="navbar-brand" href="#">Utilities(<?php echo $user_name; ?>)</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
@@ -227,7 +227,7 @@ $groupsRecordSet = $users->getGroups();
         </div>
         <div class="panel panel-default">
             <!-- Default panel contents -->
-            <div class="panel-heading">Select Permissions for this user.</div>
+            <div class="panel-heading">Select root Permission for this user.</div>
             <div class="panel-body">
 
                 <?php
@@ -235,16 +235,17 @@ $groupsRecordSet = $users->getGroups();
                 {
                     foreach($groupsRecordSet as $row) {
                         $group_id = $row['group_id'];
-                        if($group_id == 0)
+                        if($group_id != 0)
                         {
-                            //$mandatory = 'checked="checked"';
-                        }
-                        else
-                        {
+                            $mandatory = "";
+                            if($group_id == 3)
+                            {
+                                $mandatory = 'checked="checked"';
+                            }
                             echo '<div class="input-group margin-bottom">' .
                                 '<span class="input-group-addon">' .
-                                '<input name="user_permission" id="uid_' . $group_id . '" name="group_set[]"' .
-                                    'data-group_id="' . $group_id . '" value="' . $row['role'] .
+                                '<input name="user_permission" id="uid_' . $group_id . '" ' . $mandatory .
+                                    ' data-group_id="' . $group_id . '" value="' . $row['role'] .
                                     '" type="radio" aria-describedby="uid_label' . $group_id . '">' .
                                 '</span>' .
                                 '<label id="uid_label' . $group_id . '" class="form-control" for="uid_' . $group_id . '">' . $row['name'] . ': ' . $row['description'] . '</label>' .
@@ -271,8 +272,8 @@ $groupsRecordSet = $users->getGroups();
                         }
                         echo '<div class="input-group margin-bottom">' .
                             '<span class="input-group-addon">' .
-                            '<input ' . $mandatory . ' id="id_' . $group_id . '" name="group_set[]" value = "' . $group_id .
-                                'data-group_id="' . $group_id . '" data-role="' . $row['role'] . '" type="checkbox" aria-describedby="id_label' . $group_id . '">' .
+                            '<input ' . $mandatory . ' id="id_' . $group_id . '" name="group_set2[]" value = "' . $group_id .
+                                '" data-role="' . $row['role'] . '" type="checkbox" aria-describedby="id_label' . $group_id . '">' .
                             '</span>' .
                             '<label id="id_label' . $group_id . '" class="form-control" for="id_' . $group_id . '">' . $row['name'] . ': ' . $row['description'] . '</label>' .
                             '</div>';

@@ -27,12 +27,21 @@ $(function () {
             {
                 var role = $('input[name=user_permission]:checked', '#directory_vals').val();
                 var group_id = $('input[name=user_permission]:checked', '#directory_vals').data("group_id");
+
+                var values = new Array();
+                //var $checked = $("input[name='group_set2[]']:checked");
+                $.each($("input[name='group_set2[]']:checked"), function() {
+                    var item = $(this)[0];
+                    var val = $(this).val();
+                    values.push({group_id:val, role:item.dataset.role});
+                });
+                
                 var msg = "Add directory named: " + dirName + " for " + e.target.text + " with id " + e.target.id +
-                    " and role " + role + " and group_id: " + group_id;
+                    " and role " + role + " and group_id: " + group_id + " and group_set: " + JSON.stringify(values);
                 if(confirm(msg))
                 {
                     //Call DirectoryAdd.php
-                    var data = {'user_id':e.target.id, 'path':dirName, 'permissions': CONST_USER_PERMISSIONS};
+                    var data = {'user_id':e.target.id, 'path':dirName, 'permissions': role, 'group_set':JSON.stringify(values)};
                     postData("lib/DirectoryAdd.php", data, function(json){
                         alert("Successfully Added Directory respone: " + JSON.stringify(json));
                     }, function(json)

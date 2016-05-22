@@ -80,7 +80,7 @@ $strLogout = '<a href="http://' . $sessionWrap->getLogOutURL() . '" >Log Out</a>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Utilities</a>
+            <a class="navbar-brand" href="#">Explorer(<?php echo $user_name; ?>)</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
