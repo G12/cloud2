@@ -13,7 +13,7 @@ $session_dao = new GZMYSQLSessionDAO($dbConn);
 $sessions = new GZSessions($session_dao);
 $user = $sessions->statusHelper();
 
-$logger = new Log4Me(Log4me::DEBUG,"permissions_log.txt");
+$logger = new Log4Me(Log4me::INFO,"permissions_log.txt");
 $logger->setContext("Permission Update", $_SERVER['PHP_SELF']);
 
 if(!is_null($user))

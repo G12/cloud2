@@ -357,7 +357,7 @@ class FileSys
 		{
 			$dir = $this->real($this->base);
 		}
-		$this->logger->debug("id: " . $id . " name: " . $name . " dir: " . $dir);
+		//$this->logger->debug("id: " . $id . " name: " . $name . " dir: " . $dir);
 
 		if(preg_match('([^ a-zа-я-_0-9.]+)ui', $name) || !strlen($name)) {
 			throw new Exception('Invalid name: ' . $name);
@@ -543,7 +543,7 @@ class Folders
 	public function __construct($user_id)
 	{
 		$this->user_id = $user_id;
-		$this->logger = new Log4Me(Log4me::INFO,"log.txt");
+		$this->logger = new Log4Me(Log4me::DEBUG,"log.txt");
 		$this->logger->setContext("Folders", $_SERVER['PHP_SELF']);
 	}
 	
@@ -604,6 +604,10 @@ class Folders
 		//DELETE FROM `ACL` WHERE `acl_id` in (SELECT DISTINCT `acl_id` FROM `FOLDERS` WHERE `path` LIKE "giz/ACL/%" OR `path` LIKE "giz/ACL")
 		//$sql = 'DELETE FROM `ACL` WHERE `acl_id` in (SELECT DISTINCT `acl_id` FROM `FOLDERS` WHERE `path` LIKE "' . $id . '/%" OR `path` LIKE "' . $id . '")';
 		//$this->folders->executeSQL($sql);
+		
+		//Get the list of acl_ids in folders that are to be deleted
+		$sql = 'SELECT DISTINCT `acl_id` FROM `FOLDERS` WHERE `path` LIKE "' . $id . '/%" OR `path` LIKE "' . $id . '"';
+		$rs = $this->folders->getRecordSet($sql);
 
 		$sql = 'DELETE FROM `FOLDERS` WHERE `path` LIKE "' . $id . '/%" OR `path` LIKE "' . $id . '"';
 		$this->folders->executeSQL($sql);
@@ -611,6 +615,24 @@ class Folders
 		$this->folders->executeSQL($sql);
 		$sql = 'DELETE FROM `ARTWORKS` WHERE `path` LIKE "' . $id . '/%"';
 		$this->folders->executeSQL($sql);
+
+		
+		//For each acl_id test if there are orphans (acl_id is not in any folder at all)
+		foreach($rs as $row)
+		{
+			$where_clause =  ' WHERE `acl_id` = ' . $row['acl_id'];
+			$count = $this->folders->getRowCount($where_clause);
+
+			$this->logger->debug("folders->getRowCount(" . $where_clause . ") = " . $count);
+
+			if($count == 0)
+			{
+				$sql = 'DELETE FROM `ACL` WHERE `acl_id` = ' . $row['acl_id'];
+				$this->logger->debug($sql);
+				$this->folders->executeSQL($sql);
+			}
+		}
+
 	}
 	
 	public function getFolderFor($path, $parent_path, $is_file = false)
@@ -661,7 +683,7 @@ class Folders
 		//$sql = 'SELECT * FROM `ACL` WHERE `acl_id` = 2 AND ( `group_id` = 1 OR `group_id` = 0 OR `user_id` = 112 ) LIMIT 0, 30 ';
 		$sql = 'SELECT `permissions` FROM `ACL` WHERE `acl_id` = ' . $folder["acl_id"] . ' AND ( `group_id` IN ( SELECT `group_id` FROM `GROUP_MEMBERS` WHERE `user_id` = ' . $this->user_id . ' ) OR `user_id` = ' . $this->user_id . ' );';
 		
-		$this->logger->debug($sql);
+		//$this->logger->debug($sql);
 		
 		$rs = $this->folders->getRecordSet($sql);
 		$strTest = "user_id: " . $this->user_id . " path: " . $folder['path'] . " permissions[";
@@ -672,7 +694,7 @@ class Folders
 			$retVal |= $row['permissions'];
 		}
 		$strTest .= "]";
-		$this->logger->debug($strTest);
+		//$this->logger->debug($strTest);
 		return $retVal;
 	}
 	
@@ -700,7 +722,7 @@ class Folders
 			//$user_set[] = $row;
 		}
 		$permission_set = array('group_set' => $group_set, 'user_set' => $user_set);		
-		$this->logger->debug(print_r($permission_set,true));
+		//$this->logger->debug(print_r($permission_set,true));
 		return $permission_set;
 	}
 
@@ -738,7 +760,7 @@ class Users
 	
 	public function __construct() 
 	{
-		$this->logger = new Log4Me(Log4me::DEBUG,"log.txt");
+		$this->logger = new Log4Me(Log4me::INFO,"log.txt");
 		$this->logger->setContext("Users Class", $_SERVER['PHP_SELF']);
 		$this->errlog = new Log4Me(Log4Me::ERROR,"error.txt");
 		$this->errlog->setContext("Users Class", $_SERVER['PHP_SELF']);
@@ -776,7 +798,7 @@ class Users
 		$sql = 'SELECT `user_id` FROM `USERS` WHERE `email` = :email';
 		$params = array('email' => $row['email']);
 		$rs = $this->users_table->getRowSetUsing($sql, $params);
-		$this->logger->debug(print_r($rs, true));
+		//$this->logger->debug(print_r($rs, true));
 		if($rs)
 		{
 			$msg = 'The email ' . $row['email'] . ' already exists!';
@@ -793,11 +815,11 @@ class Users
 					$group_set = array($row['group_set']);
 				}
 			}
-			$this->logger->debug(("group_set: " . print_r($group_set, true)));
+			//$this->logger->debug(("group_set: " . print_r($group_set, true)));
 			//now remove group_set
 			unset($row['group_set']);
 
-			$this->logger->debug("insertRow row = " . print_r($row, true));
+			//$this->logger->debug("insertRow row = " . print_r($row, true));
 			//inserts one row of data into the table
 			//parameters: $row an associative array containg name value pairs to insert
 			//Note primaryKey must contain a value or NULL for insert id to be returned
@@ -811,7 +833,7 @@ class Users
 			$this->pdo->beginTransaction();
 
 			$user_id = $this->users_table->insertRow($row,'user_id');
-			$this->logger->debug("insertRow user_id  [" . print_r($user_id, true) . "]");
+			//$this->logger->debug("insertRow user_id  [" . print_r($user_id, true) . "]");
 			if($user_id)
 			{
 				$this->lazyLoadGroupMembers();
@@ -821,7 +843,7 @@ class Users
 					$recordset[] = array('id' => NULL, 'group_id' => $group_id, 'user_id' => $user_id);
 				}
 
-				$this->logger->debug(("recordset: " . print_r($recordset, true)));
+				//$this->logger->debug(("recordset: " . print_r($recordset, true)));
 
 				$count = $this->group_members_table->insertFullRecordSet($recordset);
 				if($count != -1)
@@ -879,7 +901,7 @@ class Images
 	public function __construct($user_id, $base_folder) //, $folder)
 	{
 		$this->user_id = $user_id;
-		$this->logger = new Log4Me(Log4me::DEBUG,"log.txt");
+		$this->logger = new Log4Me(Log4me::INFO,"log.txt");
 		$this->logger->setContext("Images Class", $_SERVER['PHP_SELF']);
 		$this->errlog = new Log4Me(Log4Me::ERROR,"error.txt");
 		$this->errlog->setContext("Images Class", $_SERVER['PHP_SELF']);
@@ -1022,8 +1044,8 @@ class Images
 		$arr["acl_id"] = $folder_row["acl_id"]; //Folder acl is default
 		$recordset[] = $arr;
 
-		$this->logger->debug("DEBUG1 path: " . $path . " folder_row: " . $folder_row);
-		$this->logger->debug("DEBUG2 recordset: " . print_r($recordset, true));
+		//$this->logger->debug("DEBUG1 path: " . $path . " folder_row: " . $folder_row);
+		//$this->logger->debug("DEBUG2 recordset: " . print_r($recordset, true));
 
 		//Start Transaction
 		$this->pdo->beginTransaction();
@@ -1046,7 +1068,7 @@ class Images
 			else
 			{
 				//Commit Transaction
-				$this->logger->debug("COMMIT " . $path);
+				//$this->logger->debug("COMMIT " . $path);
 				$this->pdo->commit();
 			}
 		}

@@ -85,7 +85,7 @@ interface IdbTable{
 	public function getRowSetUsing($sql, $params);
 
 	//returns the number of rows in the table or -1 on failure
-	public function getCount();
+	public function getCount($where_clause = "");
 	
 	//Truncate the table
 	//returns the number of rows deleted or -1 on falure
@@ -278,11 +278,11 @@ class PDOStandardTable
 		}
 	}
 	//returns the number of rows in the table or -1 on failure
-	public function getCount()
+	public function getCount($where_clause = "")
 	{
 		$this->errMsgs = "";
 		try{
-			$sql = "SELECT count(*) FROM " . $this->tableName;
+			$sql = "SELECT count(*) FROM " . $this->tableName . $where_clause;
 			return current($this->pdo->query($sql)->fetch());
 		}catch(PDOException $e){
 			$this->err("SELECT: " . $e->getMessage() . " using " . $this->tableName . " query [" . $sql . "]");
@@ -928,9 +928,9 @@ class RecordSetHelper{
 		return false;
 	}
 	//returns the number of rows in the table or -1 on failure
-	public function getRowCount()
+	public function getRowCount($where_clause = "")
 	{
-		return $this->idbTable->getCount();
+		return $this->idbTable->getCount($where_clause);
 	}
 	//Truncate the table
 	//returns the number of rows deleted or -1 on falure
