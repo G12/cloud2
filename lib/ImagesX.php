@@ -246,7 +246,8 @@
 		
 		public function makeSilverXML()
 		{
-			for($i = 0; $i < $this->dao->getCount(); $i++)
+			$str = "";
+		    for($i = 0; $i < $this->dao->getCount(); $i++)
 			{
 				$image = $this->dao->getObjectByIndex($i);
 				$str .= '<image id="' . $image->getPrimary() . '" path="' . $image->getPath() . '">' . $image->getFileName() . '</image>';
@@ -280,7 +281,7 @@
 			define(NWLN,"\n");	
 		    $count = $this->dao->getCount();
 			
-			$this->logger->debug("Table: " . $this->dao->getTableName() . " item count: " . $count);
+			//$this->logger->debug("Table: " . $this->dao->getTableName() . " item count: " . $count);
 
 			for($i = 0; $i < $count; $i++)
 			{ 
@@ -290,7 +291,7 @@
 				{
 					$path = "/" . $path . "/";
 				}
-				$this->logger->debug("path[" . $path . "]");
+				//$this->logger->debug("path[" . $path . "]");
 				$hAttr = "";
 				$divStyle = "";
 				$folder = "thumbs";
@@ -341,7 +342,7 @@
 			define(NWLN,"\n");	
 		    $count = $this->dao->getCount();
 			
-			$this->logger->debug("Table: " . $this->dao->getTableName() . " item count: " . $count);
+			//$this->logger->debug("Table: " . $this->dao->getTableName() . " item count: " . $count);
 
 			for($i = 0; $i < $count; $i++)
 			{ 
@@ -351,7 +352,7 @@
 				{
 					$path = "/" . $path . "/";
 				}
-				$this->logger->debug("path[" . $path . "]");
+				//$this->logger->debug("path[" . $path . "]");
 				$hAttr = "";
 				
 				echo '<div class="img_container" id="' . $image->getPrimary() . 'Container">' . NWLN;
@@ -395,7 +396,7 @@
 						{
 							$path = "/" . $path . "/";
 						}
-		                $this->logger->debug("path[" . $path . "]");
+		                //$this->logger->debug("path[" . $path . "]");
 		                $strImgCol .= "<td class=\"thumbStyle\">" . NWLN;
 		                $strImgCol .= "<a id=\"" . $image->getPrimary() . "\" href=\"" . $path . "cards/" . $image->getFileName() . "\" title=\"" . $image->getTitle() . "\">" . NWLN;
 		                $strImgCol .= "<img class=\"imgStyle\" src=\"" .$path . "thumbs/" . $image->getFileName() . "\" alt=\"" . $image->getAlt() . "\" /></a></td>" . NWLN;
@@ -447,7 +448,7 @@
 			$table_name = "IMAGES";
 			parent::__construct($dbConn, $table_name);
 			
-			$this->logger->debug("GZMYSQLImageXDAO constructer useDimensions[" . $useDimensions . "]");
+			//$this->logger->debug("GZMYSQLImageXDAO constructer useDimensions[" . $useDimensions . "]");
 
 		}
 		
@@ -475,7 +476,7 @@
 				$join2 = 'INNER JOIN `DIMENSIONS` d USING ( dimension_id )';
 			}
 			
-			$this->logger->debug("join1[" . $join1 . "] join2[" . $join2 . "]");
+			//$this->logger->debug("join1[" . $join1 . "] join2[" . $join2 . "]");
 			
 			$fieldName = $this->getPrimaryKeyName();
 			if($this->orderByField != "")
@@ -506,9 +507,9 @@
 			return $this->obj_list[$index];
 		}
 
-		public function getFieldXmlById($id)
+		public function getFieldXmlById($id, $join1 = "", $join2 = "", $tableNamesArray = NULL)
 		{
-			$this->logger->debug("Call ImagesX::getFieldXmlById");
+			//$this->logger->debug("Call ImagesX::getFieldXmlById");
 			$tableNamesArray = array();
 			$join1 = ', p.path';
 			$join2 = 'INNER JOIN `PATHS` p USING ( path_id )';
@@ -555,7 +556,7 @@
 					//cast to GZImageX type to add path value
 					$image = GZImageX::cast($obj);
 					$xpath = $row_data['path'];
-					$this->logger->debug("path[" . $xpath . "]");
+					//$this->logger->debug("path[" . $xpath . "]");
 					$image->setPath($xpath);
 					
 					$image->setUnit($row_data['unit']);

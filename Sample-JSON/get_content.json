@@ -1,0 +1,52 @@
+{
+  "type": "folder",
+  "content": [{
+    "height": 768,
+    "width": 1024,
+    "name": "Rugle Assuming Flat Cat Persona.jpg",
+    "imgURL": "http:\/\/surrealranch.ca\/cloud\/thumbs\/giz\/Rugle\/Rugle Assuming Flat Cat Persona.jpg",
+    "cardURL": "http:\/\/surrealranch.ca\/cloud\/cards\/giz\/Rugle\/Rugle Assuming Flat Cat Persona.jpg",
+    "text": "Rugle Assuming Flat Cat Persona.jpg",
+    "children": false,
+    "id": "giz\/Rugle\/Rugle Assuming Flat Cat Persona.jpg",
+    "type": "file",
+    "icon": "file file-jpg",
+    "title": "Rugle Assuming Flat Cat Persona"
+  }, {
+    "height": 3264,
+    "width": 2448,
+    "name": "Rugle On The Ramp.jpg",
+    "imgURL": "http:\/\/surrealranch.ca\/cloud\/thumbs\/giz\/Rugle\/Rugle On The Ramp.jpg",
+    "cardURL": "http:\/\/surrealranch.ca\/cloud\/cards\/giz\/Rugle\/Rugle On The Ramp.jpg",
+    "text": "Rugle On The Ramp.jpg",
+    "children": false,
+    "id": "giz\/Rugle\/Rugle On The Ramp.jpg",
+    "type": "file",
+    "icon": "file file-jpg",
+    "title": "Rugle On The Ramp"
+  }, {
+    "height": 1527,
+    "width": 1772,
+    "name": "Rugle-and-Rat.jpg",
+    "imgURL": "http:\/\/surrealranch.ca\/cloud\/thumbs\/giz\/Rugle\/Rugle-and-Rat.jpg",
+    "cardURL": "http:\/\/surrealranch.ca\/cloud\/cards\/giz\/Rugle\/Rugle-and-Rat.jpg",
+    "text": "Rugle-and-Rat.jpg",
+    "children": false,
+    "id": "giz\/Rugle\/Rugle-and-Rat.jpg",
+    "type": "file",
+    "icon": "file file-jpg",
+    "title": "Rugle-and-Rat"
+  }, {
+    "height": 684,
+    "width": 642,
+    "name": "Rugle.jpg",
+    "imgURL": "http:\/\/surrealranch.ca\/cloud\/thumbs\/giz\/Rugle\/Rugle.jpg",
+    "cardURL": "http:\/\/surrealranch.ca\/cloud\/cards\/giz\/Rugle\/Rugle.jpg",
+    "text": "Rugle.jpg",
+    "children": false,
+    "id": "giz\/Rugle\/Rugle.jpg",
+    "type": "file",
+    "icon": "file file-jpg",
+    "title": "Rugle"
+  }]
+}

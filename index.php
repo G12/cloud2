@@ -55,7 +55,7 @@ $strLogout = '<a href="http://' . $sessionWrap->getLogOutURL() . '" >Log Out</a>
     <link rel="stylesheet" href="../fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
     <link rel="stylesheet" href="../fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
 
-    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/index.css?ver=0007" />
     <link rel="stylesheet" href="css/table.css" />
 
     <link href="css/navbar.css" rel="stylesheet" type="text/css" />
@@ -71,7 +71,7 @@ $strLogout = '<a href="http://' . $sessionWrap->getLogOutURL() . '" >Log Out</a>
 <body>
 
 <!-- Fixed navbar -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav id="navbar-top" class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -96,8 +96,8 @@ $strLogout = '<a href="http://' . $sessionWrap->getLogOutURL() . '" >Log Out</a>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
+                        <li><a href="index.php?">Show File Names</a></li>
+                        <li><a href="#">Show Titles</a></li>
                         <li><a href="#">Something else here</a></li>
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header">Nav header</li>
@@ -128,11 +128,11 @@ $strLogout = '<a href="http://' . $sessionWrap->getLogOutURL() . '" >Log Out</a>
                         <button type="submit" id="profile_save_changes">Save Changes</button>
                     </div>
                     <div class="img_box">
-                        <a id="profile_card" class="fancybox" rel="group" href="cards/giz/Places/Early Cape Breton/Freaky Sunset Over The Barachoi.jpg">
+                        <a id="profile_card" class="fancybox" rel="group" href="">
                             <figure>
-                                <img id="profile_thumb" class="portrait" alt="test" src="thumbs/giz/Places/Early Cape Breton/Freaky Sunset Over The Barachoi.jpg">
+                                <img id="profile_thumb" class="portrait" alt="test" src="">
                             </figure>
-                            <figcaption id="profile_caption">giz/Places/Cape Breton/Whacky Sunset.jpg</figcaption>
+                            <figcaption id="profile_caption"></figcaption>
                         </a>
                     </div>
                     <div class="img_info">
@@ -265,23 +265,27 @@ $strLogout = '<a href="http://' . $sessionWrap->getLogOutURL() . '" >Log Out</a>
 <!-- Javascript Imports -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <!-- JSTree distribution -->
-<script src="dist/jstree.min.js"></script>
+<script src="dist/jstree.min.js?v=1.0001"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <!--File Upload -->
 <script src="js/file_upload/vendor/jquery.ui.widget.js"></script>
 <script src="js/file_upload/jquery.iframe-transport.js"></script>
 <script src="js/file_upload/jquery.fileupload.js"></script>
+
 <!-- Add mousewheel plugin (this is optional) -->
-<script src="../fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
-<!-- Add fancyBox -->
-<script src="../fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+<script src="fancybox/lib/jquery.mousewheel.pack.js"></script>
+
+<!-- Add fancyBox 2.1.5 -->
+<script src="fancybox/jquery.fancybox.pack.js"></script>
+
 <!-- Optionally add helpers - button, thumbnail and/or media -->
-<script src="../fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
-<script src="../fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
-<script src="../fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+<!--<script src="fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>-->
+<!--<script src="fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>-->
+<!--<script src="fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>-->
+
 <!-- My javascript -->
 <script src="js/profile.js?ver=1.000.002"></script>
-<script src="js/index.js?ver=1.000.002"></script>
+<script src="js/index.js?ver=1.000.053"></script>
 
 
 <!-- Bootstrap core JavaScript

@@ -48,6 +48,7 @@ class FileSys
 		return strlen($path) ? $path : '/';
 	}
 
+	//current use: __construct('cloud', 'pics', GZField $user)
 	public function __construct($base_folder, $folder, GZField $user) {
 		
 		$this->logger = new Log4Me(Log4me::DEBUG,"log.txt");
@@ -143,20 +144,35 @@ class FileSys
 						$id_ = $this->id($dir . DIRECTORY_SEPARATOR . $item);
 						$dir_ = $this->path($id_);
 						$file_obj = new File($dir_);
-	
-						$res[] = array('text' => $item, 'children' => false, 'id' => $id_, 'type' => 'file', 'icon' => 'file file-'.strtolower(substr($item, strrpos($item,'.') + 1)), 'permissions' => $permissions);
+
+						//New June 2016 get title and show in fancybox
+						$title = $item;
 						
 						if($file_obj->isImage())
 						{
 							//Update database
-							if(!$this->images->testFor($id_))
+							$rs = $this->images->testFor($id_);
+							if(!$rs)
 							{
 								$img = new Image($this->base_path,$dir_,$id_);
 								//If we want XMP and Exif data call
 								$img->getFileInfo();
 								$count = $this->images->addImage($img, $id_, $folder);
+								if($count != -1)
+								{
+									$rs = $rs = $this->images->testFor($id_);
+								}
+							}
+							if($rs)
+							{
+								$title = $rs['title'];
 							}
 						}
+
+						$res[] = array('text' => $title, 'children' => false, 'id' => $id_, 'type' => 'file',
+							'icon' => 'file file-'.strtolower(substr($item, strrpos($item,'.') + 1)),
+							'permissions' => $permissions, 'title' => $title);
+
 					}
 				}
 			}
@@ -223,20 +239,32 @@ class FileSys
 					if($file_obj->isImage())
 					{
 						$img = new Image($this->base_path,$dir_,$id_);
-						$res[] = array('height' => $img->getHeight(), 'width' => $img->getWidth(), 'name' => $img->getName(), 'imgURL' => $img->getThumbURL(), 'cardURL' => $img->getCardURL(), 'text' => $item, 'children' => false, 'id' => $id_, 'type' => 'file', 'icon' => 'file file-'.strtolower(substr($item, strrpos($item,'.') + 1)));
-						
+
+						//New June 2016 get title and show in fancybox
+						$title = $item;
+
+						$rs = $this->images->testFor($id_);
 						//Update database
-						if(!$this->images->testFor($id_))
+						if(!$rs)
 						{
 							//If we want XMP and Exif data call
 							$img->getFileInfo();
 							$count = $this->images->addImage($img, $id_, $folder);
-/*							if($count != -1)
+							if($count != -1)
 							{
-								$this->artworks->addArtWork($img, $id_, $folder['mods']);
+								$rs = $rs = $this->images->testFor($id_);
 							}
-*/
 						}
+						if($rs)
+						{
+							$title = $rs['title'];
+						}
+
+						$res[] = array('height' => $img->getHeight(), 'width' => $img->getWidth(), 'name' => $img->getName(),
+							'imgURL' => $img->getThumbURL(), 'cardURL' => $img->getCardURL(),
+							'text' => $item, 'children' => false, 'id' => $id_, 'type' => 'file',
+							'icon' => 'file file-'.strtolower(substr($item, strrpos($item,'.') + 1)), 'title' => $title);
+
 					}
 					else if($file_obj->isPdf())
 					{
@@ -275,6 +303,7 @@ class FileSys
 			$folder = $this->folders->getFolderFor($id, NULL);
 			$dat = array('type' => 'folder', 'content' => '');
 			$dat['content'] = $this->getDirectoryData($dir, $folder);
+
 			return json_encode($dat);
 			//return json_encode(array('type'=>'folder', 'content'=> $id));
 		}
@@ -320,6 +349,7 @@ class FileSys
 							$count = $this->images->addImage($img, $id, $folder);
 						}
 						$dat['content'] = $this->image_pages->getArrayData($this->images,$id);
+
 					}
 					catch (Exception $e) {
 						$dat['content'] = $e->getMessage();
@@ -475,7 +505,7 @@ class FileSys
 			}
 			else
 			{
-				$this->logger->debug("FAIL download_file");
+				$this->logger->debug("FAIL download_file: " . $file);
 			}
 		}
 		return json_encode(array('status' => $stat));
@@ -623,12 +653,12 @@ class Folders
 			$where_clause =  ' WHERE `acl_id` = ' . $row['acl_id'];
 			$count = $this->folders->getRowCount($where_clause);
 
-			$this->logger->debug("folders->getRowCount(" . $where_clause . ") = " . $count);
+			//$this->logger->debug("folders->getRowCount(" . $where_clause . ") = " . $count);
 
 			if($count == 0)
 			{
 				$sql = 'DELETE FROM `ACL` WHERE `acl_id` = ' . $row['acl_id'];
-				$this->logger->debug($sql);
+				//$this->logger->debug($sql);
 				$this->folders->executeSQL($sql);
 			}
 		}
@@ -901,7 +931,7 @@ class Images
 	public function __construct($user_id, $base_folder) //, $folder)
 	{
 		$this->user_id = $user_id;
-		$this->logger = new Log4Me(Log4me::INFO,"log.txt");
+		$this->logger = new Log4Me(Log4me::DEBUG,"log.txt");
 		$this->logger->setContext("Images Class", $_SERVER['PHP_SELF']);
 		$this->errlog = new Log4Me(Log4Me::ERROR,"error.txt");
 		$this->errlog->setContext("Images Class", $_SERVER['PHP_SELF']);
@@ -924,8 +954,9 @@ class Images
 	
 	private function getDefault(Image $image, $path)
 	{
-		$name = $image->getBaseName();
-		$row = array();
+	    $name = $image->getBaseName();
+
+        $row = array();
 		$row['artwork_title'] = $name;
 		$row['artwork_medium'] = "digital image";
 		$row['artwork_year'] = $image->getExifObj()->getYear();
@@ -933,6 +964,7 @@ class Images
 		$row['artwork_width'] = $image->getWidth();
 		$row['artwork_units'] = "pixels";
 		$row['path'] = $path;
+
 		return $row;
 	}
 
@@ -979,7 +1011,7 @@ class Images
 		}
 		else
 		{
-			$row = $this->getDefault($image, $path);
+		    $row = $this->getDefault($image, $path);
 		}
 		if($row)
 		{
@@ -1044,16 +1076,13 @@ class Images
 		$arr["acl_id"] = $folder_row["acl_id"]; //Folder acl is default
 		$recordset[] = $arr;
 
-		//$this->logger->debug("DEBUG1 path: " . $path . " folder_row: " . $folder_row);
-		//$this->logger->debug("DEBUG2 recordset: " . print_r($recordset, true));
-
 		//Start Transaction
 		$this->pdo->beginTransaction();
 		$count = $this->images_table->insertFullRecordSet($recordset);
 		if($count == -1)
 		{
 			//Roll Back?
-			$this->logger->debug("ROLL_BACK " . $path);
+			//$this->logger->debug("ROLL_BACK insertFullRecordSet " . $path);
 			$this->pdo->rollBack();
 		}
 		else
@@ -1062,7 +1091,7 @@ class Images
 			if($count == -1)
 			{
 				//Roll Back
-				$this->logger->debug("ROLL_BACK " . $path);
+				//$this->logger->debug("ROLL_BACK addArtWork " . $path);
 				$this->pdo->rollBack();
 			}
 			else
@@ -1079,7 +1108,7 @@ class Images
 	public function testFor($path)
 	{
 		$this->lazyLoad();
-		$sql = 'SELECT `item_id` FROM `IMAGES` WHERE `path` = "' .$path . '"';
+		$sql = 'SELECT `item_id`, `title` FROM `IMAGES` WHERE `path` = "' .$path . '"';
 		$rs = $this->images_table->getRecordSet($sql);
 		return $rs->fetch(PDO::FETCH_ASSOC);
 	}
@@ -1479,10 +1508,12 @@ class ImagePages
 		$data = $images->getImageDataRow($path);
 
 		$sql = 'SELECT `spec_id`, `column`, `caption`, `column_type` FROM `COLUMN_SPECS` WHERE (`table_name` = "IMAGES" OR `table_name` = "ARTWORKS") AND `language` = "' . $this->lang . '";';
-		
+
 		$rs = $this->table->getRecordSet($sql);
+
 		$col_specs = $rs->fetchAll(PDO::FETCH_ASSOC);
-		$page = array('fields' => '');
+
+		$columns = array();
 		foreach($col_specs as $row)
 		{
 			$val = $data[$row['column']];
@@ -1491,8 +1522,9 @@ class ImagePages
 			{
 				$row['root_url'] = $images->getRootUrl();
 			}
-			$page['fields'][$row['column']] = $row;
+            $columns[$row['column']] = $row;
 		}
+        $page = array('fields' => $columns);
 		return $page;
 	}
 

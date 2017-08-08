@@ -4150,13 +4150,32 @@
 					"separator_before"	: false,
 					"separator_after"	: true,
 					"_disabled"			: false, //(this.check("create_node", data.reference, {}, "last")),
-					"label"				: "Create",
+					"label"				: "New Folder",
 					"action"			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
-						inst.create_node(obj, {}, "last", function (new_node) {
-							setTimeout(function () { inst.edit(new_node); },0);
-						});
+						var name = prompt("Enter Folder Name");
+						if(name != null)
+						{
+							var inst = $.jstree.reference(data.reference),
+								obj = inst.get_node(data.reference);
+
+							//Test if name is unique
+							var result = obj.children.find(function(item){
+								var arr = item.split("/");
+								var str = arr[arr.length - 1];
+								return str === name;
+							})
+							if(result === undefined)
+							{
+								inst.create_node(obj, {}, "last", function (new_node) {
+									new_node.text = name;
+									setTimeout(function () { inst.edit(new_node); },0);
+								});
+							}
+							else
+							{
+								alert("Duplicate Name: " + name + ". Please enter another name.");
+							}
+						}
 					}
 				},
 				"rename" : {

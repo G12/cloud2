@@ -12,7 +12,8 @@
 
 class UploadHandler
 {
-
+    protected $user_name;
+    protected $folder_path;
     protected $options;
 
     // PHP File Upload error message codes:
@@ -40,7 +41,9 @@ class UploadHandler
 
     protected $image_objects = array();
 
-    function __construct($folder_path = '/files/', $options = null, $initialize = true, $error_messages = null) {
+    function __construct($user_name, $folder_path = '/files/', $options = null, $initialize = true, $error_messages = null) {
+        $this->user_name = $user_name;
+        $this->folder_path = $folder_path;
         $this->options = array(
             'script_url' => $this->get_full_url().'/',
             'upload_dir' => dirname($this->get_server_var('SCRIPT_FILENAME')).'/pics/'.$folder_path.'/',
@@ -1068,6 +1071,27 @@ class UploadHandler
                 }
             }
             $this->set_additional_file_properties($file);
+
+            //Email notice on file upload
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $message = "User: " . $this->user_name . " Added a New Image:\t"
+                . $this->folder_path . "/" . $name
+                . "\n\nFile Size: " . round($file_size/1000,1) . " KB"
+                . "\nUploaded from " . $ip
+                . "\nVincent Van Gopher Art Engine: http://surrealranch.ca\n"
+                . "Server page: " . $_SERVER['HTTP_REFERER'];
+            $message = wordwrap($message, 70);
+            $headers = 'From: twiegand@surrealranch.ca';
+            $subject = "New Image Added: ";
+            if(mail('twiegand@rogers.com', $subject, $message, $headers))
+            {
+            }
+            else
+            {
+                //echo "FAILED mail";
+            }
+
+
         }
         return $file;
     }

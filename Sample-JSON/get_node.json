@@ -1,0 +1,100 @@
+[{
+    "text": "Algonquin College",
+    "children": true,
+    "id": "giz\/Algonquin College",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": null
+}, {
+    "text": "BC",
+    "children": true,
+    "id": "giz\/BC",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": null
+}, {
+    "text": "EXIF",
+    "children": true,
+    "id": "giz\/EXIF",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": "0"
+}, {
+    "text": "EXIF GPS",
+    "children": true,
+    "id": "giz\/EXIF GPS",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": "0"
+}, {
+    "text": "Europe",
+    "children": true,
+    "id": "giz\/Europe",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": "0"
+}, {
+    "text": "PhotoAlbums",
+    "children": true,
+    "id": "giz\/PhotoAlbums",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": "0"
+}, {
+    "text": "Recipes",
+    "children": true,
+    "id": "giz\/Recipes",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": "0"
+}, {
+    "text": "Rugle",
+    "children": true,
+    "id": "giz\/Rugle",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": "0"
+}, {
+    "text": "Rusty Pine",
+    "children": false,
+    "id": "giz\/Rusty Pine.jpg",
+    "type": "file",
+    "icon": "file file-jpg",
+    "permissions": 127,
+    "title": "Rusty Pine"
+}, {
+    "text": "bart2",
+    "children": true,
+    "id": "giz\/bart2",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": null
+}, {
+    "text": "ingress",
+    "children": true,
+    "id": "giz\/ingress",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": null
+}, {
+    "text": "ios_uploads",
+    "children": true,
+    "id": "giz\/ios_uploads",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": null
+}, {
+    "text": "paintings",
+    "children": true,
+    "id": "giz\/paintings",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": "1"
+}, {
+    "text": "test",
+    "children": true,
+    "id": "giz\/test",
+    "icon": "folder",
+    "permissions": 127,
+    "mods": null
+}]

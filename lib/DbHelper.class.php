@@ -414,7 +414,7 @@ class MySQLTable extends PDOStandardTable implements IdbTable
 		}
 	}
 	
-	private function getWhereClause($table_name, $row, $where_clause)
+	private function getWhereClause($table_name, $row, &$where_clause)
 	{
 		$primaryKey = NULL;
 		$rs = $this->getPrimaryKeySet($this->tableName);
@@ -457,6 +457,7 @@ class MySQLTable extends PDOStandardTable implements IdbTable
 		{
 			// Build the query string
 			$query = "UPDATE `" . $this->tableName . "` SET ". $this->array_to_associative_pdo_params($row) . " " . $where_clause . ";";
+            //$this->logger->debug($query);
 			try{
 				$sth = $this->pdo->prepare($query);
 				$cols = $sth->execute($row);
@@ -532,10 +533,10 @@ class MySQLTable extends PDOStandardTable implements IdbTable
 			$ins = $this->pdo->prepare($sql);
 			if($ins->execute($row))
 			{
-				$this->logger->debug("select_clause" . $select_clause);
+				//$this->logger->debug("select_clause" . $select_clause);
 				//Return the primary key value or false
 				$retVal = current($this->pdo->query($select_clause)->fetch());
-				$this->logger->debug("retVal " . print_r($retVal, true));
+				//$this->logger->debug("retVal " . print_r($retVal, true));
 				return $retVal;
 			}
 			else
@@ -583,10 +584,12 @@ class MySQLTable extends PDOStandardTable implements IdbTable
 				$ins->execute($row);
 			}catch(PDOException $e)
 			{
-				$this->err("INSERT INTO: " . $e->getMessage() . " on " . $this->tableName . " query [" . $sql . "]");
+				//$this->logger->debug("DEBUG INSERT INTO: " . $e->getMessage() . " on " . $this->tableName . " query [" . $sql . "]");
+			    $this->err("INSERT INTO: " . $e->getMessage() . " on " . $this->tableName . " query [" . $sql . "]");
 				return -1;
 			}
 		}
+		//$this->logger->debug("RETURN VALUE: " . $count);
 		return $count;
 	}
 
@@ -637,7 +640,8 @@ class MySQLTable extends PDOStandardTable implements IdbTable
 		// Select 1 from table_name will return false if the table does not exist.
 		$this->errMsgs = "";
 		try{
-			return $this->pdo->query("SELECT 1 FROM `"  . $this->tableName . "` LIMIT 0,1");
+		    $sql = "SELECT 1 FROM `"  . $this->tableName . "` LIMIT 0,1";
+			return $this->pdo->query($sql);
 		}catch(PDOException $e){
 			$this->err("SELECT: " . $e->getMessage() . " using " . $this->tableName . " query [" . $sql . "]");
 			return false;

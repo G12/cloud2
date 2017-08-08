@@ -560,6 +560,7 @@
 		{
 			$this->logger = new Log4Me(Log4Me::DEBUG,"log.txt");
 			$this->logger->setContext("Exif Class", $_SERVER['PHP_SELF']);
+			//$this->logger->debug("filename: " . $filename);
 			if($exif = exif_read_data($filename, 0, true))
 			{
 				//$this->logger->debug(print_r($exif,true));
@@ -800,7 +801,7 @@
 			{
 				$file_exists = true;
 				$this->finfo = new finfo(FILEINFO_MIME);
-				$arr = split(";",$this->finfo->file($filename));
+				$arr = explode(";",$this->finfo->file($filename));
 				$this->mime_type = $arr[0];
 				$this->encoding = ltrim($arr[1]);
 			}

@@ -15,6 +15,7 @@ require('UploadHandler.php');
 $folder = 'public';
 if(isset($_GET['folder']))
 {
-	$folder= $_GET['folder'];
+	$folder= $_REQUEST['folder'];
+	$user_name = $_REQUEST['user_name'];
 }
-$upload_handler = new UploadHandler($folder);
+$upload_handler = new UploadHandler($user_name, $folder);

@@ -42,7 +42,10 @@ var G12_Cloud = (function()
 		var card =  this.fields.path.root_url + 'cards/' + this.fields.path.value;
 		$('#profile_thumb').attr("src",thumb);
 		$('#profile_thumb').attr("class",img_class);
+
+		$('.fancybox').removeClass("fancybox"); //Stop fancy box displaying all previous images
 		$('#profile_card').addClass("fancybox");
+
 		$('#profile_card').attr("href",card);
 		$('#profile_caption').html(this.fields.title.value);
 		

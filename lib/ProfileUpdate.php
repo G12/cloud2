@@ -2,7 +2,7 @@
 require_once('Log4me.php');
 require_once('Session.php');
 require_once('User.php');
-require_once("DbHelper.php");
+require_once("DbHelper.class.php");
 require_once("dbinfo.php");
 
 $dbConn = new GZDBConn(DB_SERVER, DB_USERNAME, DB_PW, DB_NAME);
@@ -21,19 +21,24 @@ if(!is_null($user))
 		$rslt = json_encode(array('status' => '200'));
 		$artworks_array = array();
 		$images_array = array();
-		$logger->debug("post array: " . print_r($_POST,true));
+		//$logger->debug("post array: " . print_r($_POST,true));
 		//Seperate out the IMAGES and ARTWORKS values into seperate arrays
 		foreach($_POST as $key => $value)
 		{
 			if(strpos($key, "artwork_") === false)
 			{
 				$images_array[$key] = $value;
-				$logger->debug("images_array[" . $key . "] = " . $value);
+				//$logger->debug("images_array[" . $key . "] = " . $value);
 			}
 			else
 			{
 				$artworks_array[$key] = $value;
-				$logger->debug("artworks_array[" . $key . "] = " . $value);
+				//Keep artwork_title and image title in synch
+				if($key == "artwork_title")
+				{
+					$images_array['title'] = $value;
+				}
+				//$logger->debug("artworks_array[" . $key . "] = " . $value);
 			}
 		}
 		$pdo = NULL;

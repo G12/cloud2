@@ -1,0 +1,86 @@
+html, body {
+	background:#ebebeb; font-size:10px; font-family:Verdana;
+	margin:0; padding:0;
+	/*overflow: hidden;*/
+}
+
+#container {
+	margin:50px auto 0 auto;
+	background:white;
+	border-radius:0px;
+	padding:0px;
+}
+#tree {
+	float:left;
+	width:23%;
+	overflow:auto;
+	padding:0px 0;
+	min-width: 100px
+}
+#slider{
+	float:left;
+	width:1%;
+	border-left:1px solid silver;
+	cursor: ew-resize;
+}
+#data{
+	padding-top: 10px;
+	width:74%;
+	float:left;
+	overflow:auto
+}
+#data textarea
+{
+	margin:1% 1% 1% 0;
+	padding:0;
+	height:97%; width:98%;
+	border:1px solid black;
+	background:white;
+	display:block;
+	overflow:auto;
+}
+
+#data, #code { font: normal normal normal 12px/18px 'Consolas', monospace !important; }
+
+/*Hide profile by default*/
+#data .profile{
+	display:none;
+}
+
+/*List View*/
+a {
+	text-decoration:none;
+}
+.img_box{
+	display:inline-block;
+	height:300px;
+	width:300px;
+	border: 1px solid black;
+	margin:10px;
+}
+
+.landscape{
+	width:92%;
+	display: block;
+	margin:10px auto;
+	border:1px solid black;
+}
+
+.portrait{
+	height:92%;
+	display: block;
+	margin:10px auto;
+	border:1px solid black;
+}
+
+figure{
+	height:264px;
+	margin: 0;
+	padding: 0;
+	bottom: 0;
+}
+
+figcaption{
+	padding:10px;
+	text-align:center;
+}
